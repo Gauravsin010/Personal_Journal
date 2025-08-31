@@ -329,7 +329,7 @@
             <button id="logout-btn" class="btn-secondary" style="float:right;margin-top:-10px;">
     <i class="fas fa-sign-out-alt"></i> Logout
 </button>
-<button id="refresh-btn" class="btn-secondary" style="float:right;margin-top:-10px; margin-right:10px;">
+<button id="refresh-btn" class="btn-secondary" style="float:left;margin-top:-10px; margin-right:10px;">
         <i class="fas fa-sync-alt"></i> Refresh
     </button>
             <h1><i class="fas fa-chart-line"></i> Advanced Trading Journal</h1>
@@ -1371,7 +1371,7 @@ document.getElementById('refresh-btn').addEventListener('click', async () => {
         updateMetrics();
         updateMonthlyStats();
         updateExportStats();
-        alert('Content refreshed from cloud!');
+        //alert('Content refreshed from cloud!');
     } catch (error) {
         alert('Failed to refresh content: ' + error.message);
     } finally {
@@ -1408,10 +1408,43 @@ document.getElementById('refresh-btn').addEventListener('click', async () => {
             winLossChart.data.datasets[0].data = [wins, losses];
             
             // Update strategy chart (placeholder data)
-            strategyChart.data.datasets[0].data = [1850, 1240, 2100, 850];
+
+            let SBreakout = 0;
+            let SReversal = 0;
+            let STrend = 0;
+            let SScalping = 0;
+
+            let TIntraday = 0;
+            let TSwing = 0;
+            let TPosition = 0;
+            trades.forEach(trade => {
+                if (trade.strategy === "breakout") {
+                    SBreakout ++;
+                } else if (trade.strategy === "reversal") {
+                    //console.log("found reversal");
+                    SReversal ++;
+                } else if (trade.strategy === "trend") {
+                    STrend ++;
+                } else if (trade.strategy === "scalping") {
+                    SScalping ++;
+                }
+
+                if (trade.timeframe === "intraday") {
+                    TIntraday ++;
+                } else if (trade.timeframe === "swing") {
+                    TSwing ++;
+                } else if (trade.timeframe === "position") {
+                    TPosition ++;
+                }
+
+            });
+
+            
+            strategyChart.data.datasets[0].data = [SBreakout, SReversal, STrend, SScalping];
             
             // Update timeframe chart (placeholder data)
-            timeframeChart.data.datasets[0].data = [45, 35, 20];
+            //console.log("timeframe " + trades.timeframe);
+            timeframeChart.data.datasets[0].data = [TIntraday, TSwing, TPosition];
             
             equityChart.update();
             winLossChart.update();
